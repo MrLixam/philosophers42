@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 03:55:45 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/01 21:11:48 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/04 00:11:56 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,4 +68,14 @@ int	init_philo(t_philo **phi, t_brain *brain, char **av)
 
 void	mutex_init(t_brain *brain)
 {
+	int	i;
+
+	i = -1;
+	pthread_mutex_init(brain->access, NULL);
+	pthread_mutex_init(brain->death, NULL);
+	while (++i < brain->nb_philo)
+	{
+		brain->fks[i] = ft_calloc(1, sizeof(pthread_mutex_t));
+		pthread_mutex_init(brain->fks[i], NULL);
+	}
 }

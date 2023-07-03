@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 18:43:58 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/01 20:14:38 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/03 22:54:39 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,4 +58,21 @@ void	*ft_calloc(size_t nmemb, size_t size)
 		ft_bzero(rv, nmemb * size);
 		return (rv);
 	}
+}
+
+int	get_time(void)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
+
+void	ft_usleep(int time, t_philo *philo)
+{
+	int	start;	
+
+	start = get_time();
+	while (get_time() - start < time && !philo->args->dead)
+		usleep(10);
 }
