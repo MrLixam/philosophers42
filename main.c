@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 17:48:39 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/09 02:19:39 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/09 02:37:14 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,16 @@ void	check_death(t_philo *philo)
 	time = get_time();
 	if (time - philo->last_meal > philo->ttd)
 	{
-		pthread_mutex_lock(&philo->args->death);
+		pthread_mutex_lock(&philo->args->access);
 		printf("%d %d died\n", time - philo->args->start, philo->nb);
 		philo->args->dead = 1;
-		pthread_mutex_unlock(&philo->args->death);
+		pthread_mutex_unlock(&philo->args->access);
 	}
-	pthread_mutex_lock(&philo->args->death);
+	pthread_mutex_lock(&philo->args->access);
 	if (philo->args->meals >= philo->args->nb_philo
 		&& philo->args->min_meal != -1)
 		philo->args->dead = 1;
-	pthread_mutex_unlock(&philo->args->death);
+	pthread_mutex_unlock(&philo->args->access);
 }
 
 void	free_all(t_philo *philosophers, t_brain *brain, pthread_t *th)
@@ -36,7 +36,6 @@ void	free_all(t_philo *philosophers, t_brain *brain, pthread_t *th)
 	int	i;
 
 	pthread_mutex_destroy(&brain->access);
-	pthread_mutex_destroy(&brain->death);
 	i = -1;
 	while (++i < brain->nb_philo)
 		pthread_mutex_destroy(&brain->fks[i]);

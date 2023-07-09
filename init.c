@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 03:55:45 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/09 01:52:32 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/09 02:36:53 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ void	mutex_init(t_brain *b)
 
 	i = -1;
 	pthread_mutex_init(&b->access, NULL);
-	pthread_mutex_init(&b->death, NULL);
 	b->fks = (pthread_mutex_t *)ft_calloc(b->nb_philo, sizeof(pthread_mutex_t));
 	if (!(b->fks))
 		return ;
