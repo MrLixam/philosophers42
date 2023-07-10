@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 17:48:39 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/10 17:15:02 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/10 18:26:38 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	*check_death(void *ph)
 		pthread_mutex_unlock(&philo->args->access);
 		if (read_value(&philo->args->dead, &philo->args->access))
 			return (NULL);
+		usleep(1000);
 	}
 }
 
@@ -66,20 +67,18 @@ int	main(int argc, char **argv)
 	int			error;
 	int			i;
 
-	if (argc < 5 || argc > 6)
-		return (1);
-	if (check_args(argv))
+	if ((argc < 5 || argc > 6) || check_args(argv))
 		return (1);
 	init_brain(argv, &brain);
 	error = init_philo(&philosophers, &brain, argv);
-	if (error)
-		ft_error(philosophers, &brain, NULL);
 	threads = (pthread_t *)ft_calloc(brain.nb_philo, sizeof(pthread_t));
-	if (!threads)
+	if (!threads || error)
 		ft_error(philosophers, &brain, threads);
 	i = -1;
+	pthread_mutex_lock(&brain.access);
 	while (++i < brain.nb_philo)
 		pthread_create(&threads[i], NULL, life, &philosophers[i]);
+	pthread_mutex_unlock(&brain.access);
 	i = -1;
 	while (++i < brain.nb_philo)
 		pthread_join(threads[i], NULL);

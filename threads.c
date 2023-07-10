@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 20:07:18 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/10 18:10:43 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/10 18:34:00 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,15 +70,11 @@ void	*life(void *phi)
 	temp_time = read_value(&philo->args->start, &philo->args->access);
 	if (read_value(&philo->nb, &philo->access) % 2 == 0)
 		ft_usleep(read_value(&philo->tte, &philo->access), philo);
-	while (!read_value(&philo->args->dead, &philo->args->access))
+	while (1)
 	{
 		meal(philo);
-		if (read_value(&philo->args->dead, &philo->args->access))
-			return (NULL);
 		print(philo, "is sleeping");
 		ft_usleep(philo->tts, philo);
-		if (read_value(&philo->args->dead, &philo->args->access))
-			return (NULL);
 		print(philo, "is thinking");
 	}
 	return (NULL);
