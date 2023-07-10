@@ -6,39 +6,63 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 17:48:39 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/09 02:37:14 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/10 02:11:50 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	check_death(t_philo *philo)
+int	check_death(t_philo *philo, t_brain *brain)
 {
 	int	time;
 
 	time = get_time();
-	if (time - philo->last_meal > philo->ttd)
+	if (time - philo->last_meal >= philo->ttd)
 	{
 		pthread_mutex_lock(&philo->args->access);
-		printf("%d %d died\n", time - philo->args->start, philo->nb);
+		print(philo, time - philo->args->start, "died");
 		philo->args->dead = 1;
 		pthread_mutex_unlock(&philo->args->access);
+		return (1);
 	}
 	pthread_mutex_lock(&philo->args->access);
 	if (philo->args->meals >= philo->args->nb_philo
 		&& philo->args->min_meal != -1)
 		philo->args->dead = 1;
 	pthread_mutex_unlock(&philo->args->access);
+	return (read_value(&brain->dead, &brain->access));
+}
+
+void	manager(t_philo *philo, t_brain *brain)
+{
+	int	i;
+	int	end;
+
+	while (1)
+	{
+		i = -1;
+		while (++i < read_value(&brain->nb_philo, &brain->access))
+		{
+			end = check_death(&philo[i], brain);
+			if (end)
+				return ;
+		}
+	}
 }
 
 void	free_all(t_philo *philosophers, t_brain *brain, pthread_t *th)
 {
 	int	i;
 
-	pthread_mutex_destroy(&brain->access);
+	i = -1;
+	while (++i < read_value(&brain->nb_philo, &brain->access))
+		pthread_join(th[i], NULL);
 	i = -1;
 	while (++i < brain->nb_philo)
+	{
 		pthread_mutex_destroy(&brain->fks[i]);
+		pthread_mutex_destroy(&philosophers[i].access);
+	}
 	if (philosophers)
 		free(philosophers);
 	if (th)
@@ -75,8 +99,7 @@ int	main(int argc, char **argv)
 	while (++i < brain.nb_philo)
 		pthread_create(&threads[i], NULL, life, &philosophers[i]);
 	i = -1;
-	while (++i < brain.nb_philo)
-		pthread_join(threads[i], NULL);
+	manager(philosophers, &brain);
 	free_all(philosophers, &brain, threads);
 	return (0);
 }

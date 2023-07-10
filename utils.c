@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 18:43:58 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/08 22:23:59 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/10 02:30:47 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,18 @@ int	get_time(void)
 
 	gettimeofday(&tv, NULL);
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
+
+void	ft_usleep(int time, t_philo *philo)
+{
+	int	start;
+	int	dead;	
+
+	start = get_time();
+	dead = read_value(&philo->args->dead, &philo->args->access);
+	while (get_time() - start < time && !dead)
+	{
+		usleep(100);
+		dead = read_value(&philo->args->dead, &philo->args->access);
+	}
 }

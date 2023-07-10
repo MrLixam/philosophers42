@@ -6,11 +6,18 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 20:07:18 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/09 02:37:55 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/10 02:36:56 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	print(t_philo *philo, int time, char *action)
+{
+	pthread_mutex_lock(&philo->access);
+	printf("%d	%d %s\n", time, philo->nb, action);
+	pthread_mutex_unlock(&philo->access);
+}
 
 int	read_value(int *value, pthread_mutex_t *mutex)
 {
@@ -22,44 +29,46 @@ int	read_value(int *value, pthread_mutex_t *mutex)
 	return (rv);
 }
 
-void	ft_usleep(int time, t_philo *philo)
+void	eat(t_philo *philo)
 {
-	int	start;
-	int	dead;	
-
-	start = get_time();
-	dead = read_value(&philo->args->dead, &philo->args->access);
-	while (get_time() - start < time && !dead)
-	{
-		usleep(100);
-		check_death(philo);
-		dead = read_value(&philo->args->dead, &philo->args->access);
-	}
-}
-
-void	ft_eat(t_philo *philo)
-{
-	int	temp_time;
-
-	if (read_value(&philo->args->dead, &philo->args->access))
-		return ;
-	pthread_mutex_lock(&philo->args->access);
-	temp_time = philo->args->start;
-	pthread_mutex_unlock(&philo->args->access);
-	pthread_mutex_lock(philo->fork_r);
-	printf("%d %d has taken a fork\n", get_time() - temp_time, philo->nb);
-	pthread_mutex_lock(philo->fork_l);
-	printf("%d %d has taken a fork\n", get_time() - temp_time, philo->nb);
-	printf("%d %d is eating\n", get_time() - temp_time, philo->nb);
+	print(philo, get_time() - philo->args->start, "is eating");
 	philo->last_meal = get_time();
-	ft_usleep(philo->tte, philo);
-	philo->meals++;
+	ft_usleep(read_value(&philo->tte, &philo->access), philo);
+	pthread_mutex_lock(&philo->access);
 	pthread_mutex_lock(&philo->args->access);
-	if (philo->meals == philo->args->min_meal)
+	philo->meals++;
+	if (philo->args->min_meal != -1 && philo->meals == philo->args->min_meal)
 		philo->args->meals++;
 	pthread_mutex_unlock(&philo->args->access);
-	pthread_mutex_unlock(philo->fork_r);
+	pthread_mutex_unlock(&philo->access);
+}
+
+void	meal(t_philo *philo)
+{
+	pthread_mutex_lock(philo->fork_r);
+	print(philo, get_time() - philo->args->start, "has taken a fork");
+	if (philo->args->nb_philo == 1)
+	{	
+		pthread_mutex_unlock(philo->fork_r);
+		ft_usleep(philo->ttd, philo);
+		return ;
+	}
+	pthread_mutex_lock(philo->fork_l);
+	if (read_value(&philo->args->dead, &philo->args->access))
+	{
+		pthread_mutex_unlock(philo->fork_r);
+		return ;
+	}
+	print(philo, get_time() - philo->args->start, "has taken a fork");
+	if (read_value(&philo->args->dead, &philo->args->access))
+	{
+		pthread_mutex_unlock(philo->fork_r);
+		pthread_mutex_unlock(philo->fork_l);
+		return ;
+	}
+	eat(philo);
 	pthread_mutex_unlock(philo->fork_l);
+	pthread_mutex_unlock(philo->fork_r);
 }
 
 void	*life(void *phi)
@@ -73,16 +82,14 @@ void	*life(void *phi)
 		ft_usleep(philo->tte, philo);
 	while (!read_value(&philo->args->dead, &philo->args->access))
 	{
-		ft_eat(philo);
-		check_death(philo);
-		if (read_value(&philo->args->dead, &philo->args->access))
+		meal(philo);
+		if (!read_value(&philo->args->dead, &philo->args->access))
 			return (NULL);
-		printf("%d %d is sleeping\n", get_time() - temp_time, philo->nb);
-		ft_usleep(philo->tts, philo);
-		check_death(philo);
-		if (read_value(&philo->args->dead, &philo->args->access))
+		print(philo, get_time() - temp_time, "is sleeping");
+		ft_usleep(philo->ttd, philo);
+		if (!read_value(&philo->args->dead, &philo->args->access))
 			return (NULL);
-		printf("%d %d is thinking\n", get_time() - temp_time, philo->nb);
+		print(philo, get_time() - temp_time, "is thinking");
 	}
 	return (NULL);
 }

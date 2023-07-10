@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 17:50:19 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/09 02:36:38 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/10 02:34:44 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,11 @@ typedef struct s_philo
 	int				tts;
 	int				ttd;
 	int				meals;
-	size_t			last_meal;
+	int				last_meal;
 	t_brain			*args;
 	pthread_mutex_t	*fork_l;
 	pthread_mutex_t	*fork_r;
+	pthread_mutex_t	access;
 }	t_philo;
 
 int		ft_atoi(const char *str, int *error);
@@ -53,6 +54,7 @@ int		init_philo(t_philo **phi, t_brain *brain, char **av);
 void	*ft_calloc(size_t nmemb, size_t size);
 int		read_value(int *value, pthread_mutex_t *mutex);
 void	ft_usleep(int time, t_philo *philo);
-void	check_death(t_philo *philo);
+int		check_death(t_philo *philo, t_brain *brain);
+void	print(t_philo *philo, int time, char *action);
 
 #endif
