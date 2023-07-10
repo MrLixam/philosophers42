@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 03:55:45 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/10 02:38:07 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/10 17:56:12 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void	init_brain(char **argv, t_brain *brain)
 	if (argv[5])
 		brain->min_meal = ft_atoi(argv[5], &i);
 	brain->meals = 0;
-	brain->dead = 0;
 	gettimeofday(&t, NULL);
 	brain->start = t.tv_sec * 1000 + t.tv_usec / 1000;
 	mutex_init(brain);
@@ -63,8 +62,8 @@ int	init_philo(t_philo **philo, t_brain *brain, char **av)
 		phi[i].fork_r = &brain->fks[i];
 		phi[i].fork_l = &brain->fks[(i + 1) % brain->nb_philo];
 		phi[i].ttd = ft_atoi(av[2], &error);
-		phi[i].tts = ft_atoi(av[3], &error);
-		phi[i].tte = ft_atoi(av[4], &error);
+		phi[i].tte = ft_atoi(av[3], &error);
+		phi[i].tts = ft_atoi(av[4], &error);
 		phi[i].last_meal = brain->start;
 		pthread_mutex_init(&phi[i].access, NULL);
 	}

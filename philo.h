@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 17:50:19 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/10 02:34:44 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/10 17:55:55 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ int		init_philo(t_philo **phi, t_brain *brain, char **av);
 void	*ft_calloc(size_t nmemb, size_t size);
 int		read_value(int *value, pthread_mutex_t *mutex);
 void	ft_usleep(int time, t_philo *philo);
-int		check_death(t_philo *philo, t_brain *brain);
-void	print(t_philo *philo, int time, char *action);
+void	*check_death(void *ph);
 
 #endif
