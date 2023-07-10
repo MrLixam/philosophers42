@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 20:07:18 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/10 18:34:00 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/10 19:11:46 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,10 @@ void	meal(t_philo *philo)
 	pthread_mutex_unlock(philo->fork_l);
 	pthread_mutex_unlock(philo->fork_r);
 	pthread_mutex_lock(&philo->access);
+	pthread_mutex_lock(&philo->args->access);
 	philo->meals++;
 	philo->args->meals++;
+	pthread_mutex_unlock(&philo->args->access);
 	pthread_mutex_unlock(&philo->access);
 }
 
