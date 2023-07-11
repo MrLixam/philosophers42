@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 03:55:45 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/10 17:56:12 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/11 14:53:30 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int	check_args(char **argv)
 	int	temp;
 
 	i = 0;
+	error = 0;
 	while (argv[++i])
 	{
 		temp = ft_atoi(argv[i], &error);
@@ -36,6 +37,7 @@ void	init_brain(char **argv, t_brain *brain)
 	i = -1;
 	brain->nb_philo = ft_atoi(argv[1], &i);
 	brain->min_meal = -1;
+	brain->dead = 0;
 	if (argv[5])
 		brain->min_meal = ft_atoi(argv[5], &i);
 	brain->meals = 0;
@@ -76,6 +78,7 @@ void	mutex_init(t_brain *b)
 
 	i = -1;
 	pthread_mutex_init(&b->access, NULL);
+	pthread_mutex_init(&b->print, NULL);
 	b->fks = (pthread_mutex_t *)ft_calloc(b->nb_philo, sizeof(pthread_mutex_t));
 	if (!(b->fks))
 		return ;

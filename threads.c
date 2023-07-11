@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 20:07:18 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/10 19:11:46 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/11 15:51:01 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,14 @@
 void	print(t_philo *philo, char *action)
 {
 	int	time;
+	int	nb;
 
-	pthread_mutex_lock(&philo->access);
 	time = get_time() - read_value(&philo->args->start, &philo->args->access);
+	nb = read_value(&philo->nb, &philo->access);
+	pthread_mutex_lock(&philo->args->print);
 	if (!read_value(&philo->args->dead, &philo->args->access))
-		printf("%d	%d %s\n", time, philo->nb, action);
-	pthread_mutex_unlock(&philo->access);
+		printf("%d	%d %s\n", time, nb, action);
+	pthread_mutex_unlock(&philo->args->print);
 }
 
 int	read_value(int *value, pthread_mutex_t *mutex)
@@ -50,14 +52,15 @@ void	meal(t_philo *philo)
 	philo->last_meal = get_time();
 	pthread_mutex_unlock(&philo->access);
 	ft_usleep(read_value(&philo->tte, &philo->access), philo);
-	pthread_mutex_unlock(philo->fork_l);
-	pthread_mutex_unlock(philo->fork_r);
-	pthread_mutex_lock(&philo->access);
 	pthread_mutex_lock(&philo->args->access);
+	pthread_mutex_lock(&philo->access);
 	philo->meals++;
-	philo->args->meals++;
+	if (philo->meals == philo->args->min_meal)
+		philo->args->meals++;
 	pthread_mutex_unlock(&philo->args->access);
 	pthread_mutex_unlock(&philo->access);
+	pthread_mutex_unlock(philo->fork_l);
+	pthread_mutex_unlock(philo->fork_r);
 }
 
 void	*life(void *phi)
@@ -67,17 +70,17 @@ void	*life(void *phi)
 	pthread_t	death;
 
 	pthread_create(&death, NULL, &check_death, phi);
-	pthread_detach(death);
 	philo = (t_philo *)phi;
 	temp_time = read_value(&philo->args->start, &philo->args->access);
 	if (read_value(&philo->nb, &philo->access) % 2 == 0)
 		ft_usleep(read_value(&philo->tte, &philo->access), philo);
-	while (1)
+	while (!read_value(&philo->args->dead, &philo->args->access))
 	{
 		meal(philo);
 		print(philo, "is sleeping");
 		ft_usleep(philo->tts, philo);
 		print(philo, "is thinking");
 	}
+	pthread_join(death, NULL);
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 17:48:39 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/10 19:01:13 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/11 15:55:50 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,27 +15,29 @@
 void	*check_death(void *ph)
 {
 	t_philo	*p;
-	t_brain	brain;
+	t_brain	*brain;
 
 	p = (t_philo *)ph;
-	brain = *p->args;
+	brain = p->args;
 	while (1)
 	{
-		pthread_mutex_lock(&brain.access);
 		if (get_time() - read_value(&p->last_meal, &p->access)
 			> read_value(&p->ttd, &p->access))
 		{
-			if (!brain.dead)
-				printf("%d %d died\n", get_time() - brain.start,
+			pthread_mutex_lock(&brain->access);
+			if (!brain->dead)
+				printf("%d %d died\n", get_time() - brain->start,
 					read_value(&p->nb, &p->access));
-			brain.dead = 1;
+			brain->dead = 1;
+			pthread_mutex_unlock(&brain->access);
 		}
-		if (brain.meals >= brain.nb_philo && brain.min_meal != -1)
-			brain.dead = 1;
-		pthread_mutex_unlock(&brain.access);
-		if (read_value(&brain.dead, &brain.access))
+		pthread_mutex_lock(&brain->access);
+		if (brain->meals >= brain->nb_philo && brain->min_meal != -1)
+			brain->dead = 1;
+		pthread_mutex_unlock(&brain->access);
+		if (read_value(&brain->dead, &brain->access))
 			return (NULL);
-		usleep(1000);
+		usleep(1);
 	}
 }
 
@@ -81,7 +83,7 @@ int	main(int argc, char **argv)
 		pthread_create(&threads[i], NULL, life, &philosophers[i]);
 	pthread_mutex_unlock(&brain.access);
 	i = -1;
-	while (++i < brain.nb_philo)
+	while (++i < read_value(&brain.nb_philo, &brain.access))
 		pthread_join(threads[i], NULL);
 	free_all(philosophers, &brain, threads);
 	return (0);
