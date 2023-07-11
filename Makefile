@@ -6,7 +6,7 @@
 #    By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/05/22 17:36:34 by lvincent          #+#    #+#              #
-#    Updated: 2023/07/11 15:52:08 by lvincent         ###   ########.fr        #
+#    Updated: 2023/07/11 17:08:57 by lvincent         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ OBJ = $(SRC:.c=.o)
 
 CC = clang
 
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra -g -fsanitize=thread
 
 all : $(NAME)
 

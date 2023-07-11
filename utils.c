@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 18:43:58 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/11 13:29:28 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/11 17:18:04 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,10 @@ void	ft_usleep(int time, t_philo *philo)
 	int	dead;	
 
 	start = get_time();
-	dead = read_value(&philo->args->dead, &philo->args->access);
+	dead = read_value(&philo->args->dead, &philo->args->death);
 	while (get_time() - start < time && !dead)
 	{
 		usleep(100);
-		dead = read_value(&philo->args->dead, &philo->args->access);
+		dead = read_value(&philo->args->dead, &philo->args->death);
 	}
 }
