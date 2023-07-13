@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 03:55:45 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/13 15:41:36 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/13 16:30:05 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	digits_present(char *arg)
 {
-	int i;
-	int digit;
+	int	i;
+	int	digit;
 
 	i = -1;
 	digit = 0;
