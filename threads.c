@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/01 20:07:18 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/11 18:11:40 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/13 15:41:46 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void	*life(void *phi)
 {
 	t_philo		*philo;
 
-	philo = (t_philo *)phi;	
+	philo = (t_philo *)phi;
 	if (read_value(&philo->nb, &philo->access) % 2 == 0)
 		ft_usleep(read_value(&philo->tte, &philo->access), philo);
 	while (!read_value(&philo->args->dead, &philo->args->death))

@@ -6,11 +6,26 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 03:55:45 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/11 18:08:45 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/13 15:41:36 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	digits_present(char *arg)
+{
+	int i;
+	int digit;
+
+	i = -1;
+	digit = 0;
+	while (arg[++i])
+	{
+		if (is_digit(arg[i]))
+			digit = 1;
+	}
+	return (digit);
+}
 
 int	check_args(char **argv)
 {
@@ -22,8 +37,10 @@ int	check_args(char **argv)
 	error = 0;
 	while (argv[++i])
 	{
+		if (!digits_present(argv[i]))
+			error = 1;
 		temp = ft_atoi(argv[i], &error);
-		if (temp < 0)
+		if (temp <= 0)
 			error = 1;
 	}
 	return (error);

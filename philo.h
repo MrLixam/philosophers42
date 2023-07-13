@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 17:50:19 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/11 18:02:03 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/13 14:41:01 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,5 +58,6 @@ int		read_value(int *value, pthread_mutex_t *mutex);
 void	ft_usleep(int time, t_philo *philo);
 void	*check_death(void *ph);
 void	print(t_philo *philo, char *action);
+int		is_digit(char c);
 
 #endif

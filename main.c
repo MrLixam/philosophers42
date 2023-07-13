@@ -6,7 +6,7 @@
 /*   By: lvincent <lvincent@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 17:48:39 by lvincent          #+#    #+#             */
-/*   Updated: 2023/07/11 18:19:12 by lvincent         ###   ########.fr       */
+/*   Updated: 2023/07/13 15:59:41 by lvincent         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,14 @@ void	*check_death(void *ph)
 		while (++val[0] < val[1])
 		{
 			if (get_time() - read_value(&p[val[0]].last_meal, \
-				&p[val[0]].access) > val[2])
+				&p[val[0]].access) >= val[2])
 				if (!read_value(&brain->dead, &brain->death))
 					print(&p[val[0]], "has died");
 			check_amount(brain);
 			if (read_value(&brain->dead, &brain->death))
 				return (NULL);
 		}
+		usleep(1);
 	}
 }
 
@@ -62,6 +63,8 @@ void	free_all(t_philo *philosophers, t_brain *brain, pthread_t *th)
 	i = -1;
 	while (++i < brain->nb_philo)
 		pthread_mutex_destroy(&brain->fks[i]);
+	if (brain->fks)
+		free(brain->fks);
 	if (philosophers)
 		free(philosophers);
 	if (th)
